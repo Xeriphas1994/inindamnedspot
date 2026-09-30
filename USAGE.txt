@@ -1,0 +1,60 @@
+Launch
+======
+
+python iirc.py -magick <file> -input <file> -output <file> -pane <file> -dotradius <integer> -dotcolor <color> -labelsize <integer> -labelcolor <color> -linewidth <integer>
+
+Required parameters:
+
+-magick			path and filename of ImageMagick executable
+-input			location of blank map
+-output			destination for final dotted map, will be overwritten if it already exists
+
+Optional parameters:
+
+-pane			use a different image for the widget background than the blank map (intended for redoing an existing set of dots).
+				If you use this, temporary markers will not be added with each click.
+				It's up to you to ensure this image is cropped/scaled/padded like the actual input image, no AI prompts here
+-dotradius		radius of sticker in pixels (default is 7).  You'll need this one eventually because third party maps use many different geographic scales
+-dotcolor		sticker color (default is purple).  Must be in RGB hex format, excluding leading '#'
+-labelsize		label font size (default is 12).  The automatic resizing for multi-character labels can whiff, so sometimes this has to be adjusted after you see the full map
+-labelcolor		label font color (default is white).  Must be in RGB hex format, excluding leading '#'
+-linewidth		thickness of solid lines AND dashed curves in pixels (default is 4).  Does not check whether new value will look ridiculous relative to sticker size
+
+Please put all images in PNG format as the doomwiki.org users do, this code may or may not work in other cases
+
+Large images will try to scale down to fit on your display
+
+If you add dots to an image that already contains some, rendering artifacts may occur (not sure why yet)
+
+
+Data entry commands
+===================
+
+mouse button 1	add next coordinate (dot, line destination, or point on dashed curve)
+L				indicate that next click will be a line destination, no dot
+P				start or end curved path
+D				backspace
+R				reuse previous label, press again to undo
+Q				exit and try to draw final image, ignored if you have a line/path still in progress
+
+IME it is easy to accidentally make a change that requires backspacing through many previous rows (currently you can't edit them in place, apologies!).  Write the entire article prose first so you know where the stickers go
+
+Curves turned out a bit more fragile than envisioned:
+	Algorithm requires at least 3 points, so pressing P will be ignored with only 1 or 2.
+	No check to see if path hits a wall.  Be dense in corners, and if you must be sparse in straightaways be VERY linear.
+	Very long curves can "oscillate" themselves into a mess.  Try entering it as multiple segments, each of which is either a tight turn or relatively linear.
+
+Duplicate labels will be slightly smaller in the final image for visual contrast (example: https://doomwiki.org/wiki/SQUARES#Overview)
+
+
+Variables in script that are... probably... safe to customize
+=============================================================
+
+label_font			has to match OS information exactly, including capitalization and punctuation
+dash_lengths		I already forget how this works, please test before uploading, or seek ImageMagick documentation
+speck_color			color of all placeholder drawing objects
+speck_radius		size of placeholder rendering of line destinations/curve points
+scribble_font_size	placeholder label letter size
+
+Other changes may be possible but are much more awkward and not recommended until future versions have refactored some code
+

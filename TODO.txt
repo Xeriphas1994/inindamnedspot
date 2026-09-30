@@ -1,0 +1,183 @@
+I thought I was being sooo humble by including all these details, but if everything were actually implemented, usage would be much slower!!
+
+
+
+Interface
+=========
+
+Command line options:
+	Override default coordinate font
+	Override default coordinate font size
+	Override default minimum padding between label and dot edge (called "slop" in the code, I assume that came from Jargon File)
+	Scroll base image instead of scaling, if it's too large
+	Customize coordinate list delimiters such as "P" and "~~~>"
+		coord_inflate() probably isn't smart enough for arbitrary strings here, must refactor with regexes or whatnot
+	Override default indenting width in coordinate pane
+	Make coordinate pane wider or narrower
+	Save coordinates to a file before rendering (in combination with other options, allows formatting changes without having to redo all input!)
+	Read coordinates from a file, opening widget afterward for any needed changes
+	Read options from a text file
+	Suppress verbose status updates, both mine and ImageMagick's
+	Invert colors in the base image (everyone's eyes are different, may make the dot color stand out more)
+
+More keyboard commands:
+	"Autofire" modifier, for adding large numbers of points to a curve
+	Arrows should move pointer VERY slowly
+	Mouse click alternative
+	Zoom image with +/- (like in a mapping app) if scroll option was selected.  For a huge map it would be enervating at best to click exactly the right place each time
+	Toggle fullscreen mode
+
+Change mouse pointer to a crosshair until the widget closes -- can make it much easier to see exactly where dot center is
+
+Rough drawing of solid lines and curves during data entry also
+
+When you backspace, erase the temp marker also
+
+Pane boundaries should be draggable with all elements re-rendering on release, like any other app in 2026
+
+In the putative windowed mode, window should be draggable and resizeable, like any other app in 2026
+
+Ability to edit a previous element in place without erasing all subsequent points
+
+Test that my suggested change for portrait display (code comment in init section) actually works and document it
+
+Scroll bar outline/arrows should remain visible when map pane is in focus
+
+Display current hover position (like in an image editing app).  Values should account for the scaling from the base image if any.
+	EDIT: Before trying this, confirm this is scaling correctly in the coordinate pane as is, e.g. for comparison with info about the image from other apps.
+
+
+
+Validation
+==========
+
+When font is customized, check on launch that it is actually installed and supports arbitrary sizes.  If not, error out with instructions how to list available fonts on the device
+
+Don't freeze if a path is entered before "A" (or indeed if there are no dots at all, because you added them in a previous session)
+
+Re-parse entire coordinate input after each command, and error out if not self-consistent, with a message that it's not your fault and you should report it to repo
+
+If output filename already exists, copy it first, and notify the user (in case of a fatal error)
+
+validate_params() should check that inputfile and panefile exist, and outputfile is in a writeable location
+
+Incomprehensible note from my younger self: "calibrate_handle in center_letter() had a hardcoded directory in 2025.  In the meantime I moved the overall grandparent folder.  This seemed to make the temp files write (because the path was derived from the input params) but then not read (because the hardcoded value hadn't updated).  So I made it not be hardcoded... but why was it in the first place?  Did I just quash some important functionality?"
+
+
+
+Rendering
+=========
+
+Command line option to override default label font (I am sure this is easy to validate on launch but I didn't figure it out, sorry)
+
+By default, derive a "proportional" line/curve thickness from dot diameter so the user doesn't have to specify it separately
+
+Fix intermittent bug where dash snippets seemingly appear next to unrelated dots
+
+Fix intermittent bug where one end of a curve careens toward the corner of the image (seems to become more likely with length)
+
+For each path, save coordinate list temporarily to a file and pass filename to the final command, to avoid hitting OS limits on command line length
+	If there are a huge number of stickers, may need to generalize this to multiple passes, saving lossless intermediate images between invocations
+
+Preprocessing path coordinates so long paths don't overcorrect?  I was never totally confident in my GIMP steps either, these are grasping at straws for a bandaid fix:
+	Remove adjacent duplicates
+	Trim some interior values from sections that are obviously nearly straight
+	Completely separate curving and near-straight sections into different bezier invokes (aggressive, causes nonuniform dash length, but definitely more predictable)
+
+Do we need to be more careful about the ordering of concatenations in build_magick(), so a line/curve never scratches out part of a letter?
+
+
+
+Miscellaneous changes (sensible)
+================================
+
+Accumulate "library" of stickers in a temp folder, to speed up subsequent runs with identical formatting
+
+Make solid and dashed lines able to have different thicknesses, splitting command line option accordingly
+
+Command line options:
+	Override default decrementing of font size for multi-character labels
+	Based on a constant font size, vary dot diameter among letters so each is as small as possible without cropping the label
+		Note that this must be completely empirical, counting individual pixels by color -- font metadata often gets this very wrong per sources in credits.txt
+	Based on a constant dot diameter, vary font size among letters so each is as large as possible without going outside circle
+		Empirical as above, IIRC this was a frequent tripwire when I was doing it manually
+	Autodetect portrait display dimensions (with ancilla "fullscreen" object?) and resize panes to minimize wasted space
+	Specify temp directory different from the final output destination
+
+Autodetect ImageMagick executable
+
+For huge base images, do the down-scaling in several passes and apply one of the line thickening functionalities in between, so lines are never glitched away (per "Resizing Line Drawings" in https://usage.imagemagick.org/resize/)
+
+Allow raster formats other than PNG.  Bonus: know which ones are definitely supported upstream in the context of the commands we are using, and put that list in the readme
+
+Do coordinates occasionally get dropped if I click very very rapidly?
+
+Before writing final image to a file, render it to the screen and ask for confirmation
+
+Customized label sequences, including some form of "dynamic" specification to support sub-sequences of differing lengths (e.g. letter + integer, like an airport gate number, where the letter is a category such as secrets or powerups, and the maximum numeric value must realistically vary by map and category)
+
+Some way of putting borders on the circles (to make them more visible in thumbnails as fredrikj suggested a thousand years ago)
+
+Support multiple shapes (e.g. so multiplayer points of interest can be diamonds/triangles and everything else a circle?)
+
+Is there an alternative algorithm to bezier, more intuitive for the end user who won't know the underlying math (I only understand like 1/3 of it myself), to force all the curved parts of paths to be much closer to the actual clicks, without ad hoc steps like I've proposed?  This must be native in ImageMagick like bezier is, for maintainability.  Or more likely a Python library for approximate fitting, that converts something else "raw" into bezier coordinates to feed to ImageMagick, because 2D graphic designers somewhere were having this same standoff.  (For all I know, people who have actually written rendering code would think this is a stupid question, and/or this is a totally standard thing in C++/Unity/Flash, but it's an honest question.)
+
+Key command to skip a label (for when a dot already exists in the base image)
+
+Decide whether numpy is still needed, after parsing/storage of coordinates is considered more stable, but without assuming any snooty linear algebra calculations (implied below) are imminent
+
+Key command to toggle all temporary markers (cf. my supposed "sensible default" of not showing them with -pane)
+
+
+
+Miscellaneous changes (silly)
+=============================
+
+Center labels with a weighted average, including saturation percentage of individual pixels, instead of simple geometric center
+
+Command line option to eschew rough markers and draw a cumulative final image to the screen immediately after each token.  Detect when this is potentially unbelievably slow/resource intensive with the current image dimensions and device (per sources in credits.txt) and ask for confirmation the first time.  Investigate use of multithreading to speed it up?
+
+Command line options to allow dots, lines, paths, and rough markers to all be different colors
+
+Use advanced image processing to infer a nominal dot size from the density of lines in the base image
+
+Wrap extremely long labels within the dot, so adjusted font size doesn't need to be as tiny
+
+Save final image in a layered format as well as flattened (in case the user wants to edit later with a completely different app)
+
+If -pane is used, use advanced image processing to automatically scale/crop/pad the pane image to match the input image
+
+Allow tweaking individual dot sizes as part of entering coordinates (based on doomwiki.org precedent this is definitely a corner case)
+
+Accumulate "library" of scaled base images in a temp folder to speed up subsequent runs
+
+Support vector image formats (prominent public projects show us this can be done, albeit with enormous effort)
+
+Support multiple dot colors for sectioning/categorization of route elements (shouldn't be done IMO for accessibility, thanks to doomwiki.org user PolicyNonsense for saying so in public)
+
+Make everything usable on touch screens (axiomatic in 2026, obviously, but MediaWiki will never fully support touch screens, so I would rather not troll users by allowing them to create images when they probably can't contribute prose to match)
+
+
+
+Miscellaneous changes (very silly)
+==================================
+
+Suggested nominal dot size should depend partly on ratio of player actor radius to map line density (not knowable from the base image itself; need either the .ini file from the bot run, or to extract the blueprint anew from the WAD and overlay them intelligently to determine the scale factor)
+
+Use advanced image processing to detect whether a curve is hitting walls, warn and offer to backtrack or erase entire path
+
+Retrieve input file through the wiki API
+
+Replace ImageMagick with PIL/Pillow (not a good idea IMO because it doesn't natively support bezier, so hand-crafted logic would have to be folded in and maintained forever with library updates.  That said, at least one example of such logic is explained thoroughly in the sources in credits.txt)
+
+Replace ImageMagick with "script-fu" in GIMP (not a good idea IMO because Scheme programming is much more obscure than Python, so all else equal your chance of finding maintainers drops sharply)
+
+Replace ImageMagick with a Python plugin in GIMP (not a good idea afaict because plugins break easily during upgrades, and consume resources as long as they stay registered, according to sources in credits.txt)
+
+Automatically upload final image to the wiki and edit the article to include the tabbed template
+
+Interoperate with mapping app to overlay Things or other features on the base image, to aid memory in choosing locations.  Bonus: import the coordinates of a specific Thing on request so the dot matches them without manual transcribing
+
+Interoperate with port to play live or use a LMP, with super-slow-motion/pausing and a chasecam, thus coordinates can be selected from the ingame visuals by panning around in 3D and clicking.  Super jackpot bonus: simultaneously interoperate with mapping app so you aren't even asking for coordinates, just that the user highlights map elements of any category to bind to labels in a list, and then the compositing script intelligently populates the dots and lines without overlap or other emergent visual clashes (broadly analogous to those project management apps that make flow diagrams of manufacturing, databases, paperwork procedures, org charts etc. without any new code)
+
+

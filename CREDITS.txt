@@ -1,0 +1,64 @@
+Big picture
+===========
+
+All the walkthrough writers at doomwiki.org for doing the difficult, non-automatable part of the publication: actually staking out routes and describing them lucidly.
+
+Xymph, Fredrik, Gez, Jdowland, and the other developers at doomwiki.org for releasing so much great work that this script can even be argued to be a scalability improvement.
+
+GIMP for enabling many manual proofs of concept, and in a nearly-user-friendly interface too (must have nauseated the GNU developers but they did it).
+
+Jesper Schmidt Hansen for suggesting what to do when code and readmes get separated.
+
+GNU GPL v3 for the warranty disclaimer idea.
+
+
+tkinter
+=======
+
+[I *did* try using the received wisdom linked from the Python docs.  Few commands seemed to have visible behavior.]
+
+https://stackoverflow.com/questions/65639160/
+https://stackoverflow.com/questions/64998721/
+https://bobbyhadz.com/blog/close-tkinter-window-in-python
+https://stackoverflow.com/questions/2603169/
+https://stackoverflow.com/questions/3177969/ [what NOT to do]
+https://pythonguides.com/python-tkinter-window-size/
+https://coderspacket.com/posts/how-to-set-tkinter-window-at-a-specific-position/
+https://www.pythontutorial.net/tkinter/tkinter-label/
+https://stackoverflow.com/questions/36381225/ [root object resolution silently defaults to 720p and none of the 20,000 beta testers noticed]
+https://stackoverflow.com/questions/43170320/
+https://python-hub.com/tkinter-scrolledtext-made-easy/
+https://stackoverflow.com/questions/74328563/
+https://stackoverflow.com/questions/27770572/
+
+
+ImageMagick
+===========
+
+https://usage.imagemagick.org/ [omg all the things]
+https://stackoverflow.com/questions/39504522/
+https://stackoverflow.com/questions/6977215/ [Python dev drama noted]
+https://github.com/ImageMagick/ImageMagick/issues/3708
+
+
+Pillow
+======
+
+https://pil-dimensions.readthedocs.io/en/latest/dashes/intro_dashes.html
+https://stackoverflow.com/questions/51908563/
+https://stackoverflow.com/questions/71922099/
+https://discuss.python.org/t/pip-installing-off-path-should-i-do-something/21353
+
+
+GIMP workflow ideas
+===================
+
+https://duckduckgo.com/?t=palemoon&q=python+gimp+reference&ia=web
+https://medium.com/@chriziegler/introduction-to-python-scripting-in-gimp-141b860ad7e
+gimp-using-python-plug-in-tutorial.html [local help file]
+https://duckduckgo.com/?t=palemoon&q=gimp+python+in+batch+mode&ia=web
+https://stackoverflow.com/questions/44430081/ [party line is that any Python batch must be a registered plugin, but this claims not!]
+https://gimpchat.com/viewtopic.php?f=9&t=15024
+https://www.gimp-forum.net/Thread-Debugging-python-fu-scripts-in-Windows
+https://stackoverflow.com/questions/5794640/
+

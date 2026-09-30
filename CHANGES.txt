@@ -1,0 +1,86 @@
+v0.0.1 (2026-09-30)
+======
+
+First public release.
+
+Render temporary markers in widget so the user can &@$#% see what they're doing.  The line endpoints and curved path elements are just tiny circles for now, todo.txt indicates how this might be improved.
+
+
+v0.0.0.7 (2026-09-26)
+========
+
+Removed version number from filename **shrug**
+
+Added -labelsize option to override the default font size (label_size variable).
+
+Added -labelcolor option to override the default letter color (label_color variable).
+
+Added -dotradius option to override the default dot radius (dot_radius variable).
+
+Added -dotcolor option to override the default dot background color (dot_color variable).
+
+Added -linewidth option to override the default thickness of lines/paths (line_width variable).
+
+Added -magick option to specify location of ImageMagick app (d'oh, that wouldn't have worked for many people with my local hardcoded value).
+
+
+v0.0.0.6 (2025-11-23)
+========
+
+Don't save the same dot image multiple times when labels repeat.  (Slower, and would have been far more so if the "adaptive" size changes in TODO.txt ever became real.)
+
+Bug: make auto-centering function account for shrinking of duplicate labels (woooops).
+
+
+v0.0.0.5 (2025-10-11)
+========
+
+If no coordinates were entered, don't do any processing, just save off a copy.
+
+Make the coordinate list scrollable.
+
+Don't allow ending a path sequence until it has at least 3 points (or else bezier function in ImageMagick will crap out).
+
+If base image or -pane image is too large for the window, scale it down at the beginning, and then "inflate" coordinates back up before compositing.
+
+Bug: stop conflating -pane image with base image in file/folder operations.
+
+Center labels empirically instead of with ImageMagick -gravity command which is not very reliable (especially with fonts that leave a lot of padding, of which there are many as GIMP users know).
+
+Support duplicate labels; when they are used, make their markers somewhat smaller for visual contrast.
+
+
+v0.0.0.4 (2025-10-06)
+========
+
+Store coordinates as a ham-handed array instead of delimited text, for easier parsing.
+
+Support pointer lines (e.g. indicate wall segments in close quarters or much shorter than the dot radius, like techbase switches).
+
+Support dashed curves (e.g. for mazes).
+
+Make font size shrink somewhat when the label has multiple characters.
+
+
+v0.0.0.3 (2025-09-25)
+========
+
+Generate a final image with ImageMagick.
+
+Support displaying an image other than the base image (for "remastering" an existing upload).
+
+
+v0.0.0.2 (2025-09-24)
+========
+
+Rewrite with PanedWindow and ttk.  Doesn't actually assemble a final image yet, just writes the coordinates to a text file.
+
+Supports only isolated dots (no lines, paths, or duplicate labels).
+
+
+v0.0.0.1 (2025-09-22)
+========
+
+First draft, with what I thought was a very vanilla tkinter instantiation on a very vanilla Windows device, and then it didn't display anything.
+
+

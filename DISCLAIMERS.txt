@@ -1,0 +1,5 @@
+This software and documentation are provided AS IS.  To the extent permitted by applicable law, there is NO WARRANTY OF ANY KIND for the content, including, but not limited to,
+the implied warranties of merchantability and fitness for a particular purpose.  THE ENTIRE RISK as to the quality and performance of the program is with you.  Should the program prove defective, you assume THE ENTIRE COST, monetary and otherwise, of all necessary servicing, repair, or correction.
+
+As of version 0.0.1, no AIs/LLMs (in fact no IDEs) were used to create the code, code comments, or documentation in this package.  General-purpose aggregators (e.g. Google, Bing, StackOverflow) consulted during development were not assessed for AI/LLM usage, therefore it is conceivable that certain elements of the current program logic reflect AI/LLM-generated content, via manual transcription after the fact.
+
