@@ -19,17 +19,20 @@ Command line options:
 	Read options from a text file
 	Suppress verbose status updates, both mine and ImageMagick's
 	Invert colors in the base image (everyone's eyes are different, may make the dot color stand out more)
+	Invert colors in the coordinate pane
 
 More keyboard commands:
 	"Autofire" modifier, for adding large numbers of points to a curve
 	Arrows should move pointer VERY slowly
 	Mouse click alternative
-	Zoom image with +/- (like in a mapping app) if scroll option was selected.  For a huge map it would be enervating at best to click exactly the right place each time
+	Zoom image with +/- and/or mouse wheel (like in a mapping app) if scroll option was selected.  For a huge map it would be enervating at best to click exactly the right place each time
 	Toggle fullscreen mode
 
 Change mouse pointer to a crosshair until the widget closes -- can make it much easier to see exactly where dot center is
 
-Rough drawing of solid lines and curves during data entry also
+Rough drawing of solid lines during data entry (EDIT: easy win?)
+
+Rough drawing of curves during data entry (EDIT: given some of the other changes proposed, the specks may be as much info as we can provide, assuming it's prohibitive to actually have a responsive preview of the stroke algorithm like in GIMP)
 
 When you backspace, erase the temp marker also
 
@@ -51,7 +54,7 @@ Display current hover position (like in an image editing app).  Values should ac
 Validation
 ==========
 
-When font is customized, check on launch that it is actually installed and supports arbitrary sizes.  If not, error out with instructions how to list available fonts on the device
+Check on launch that requested font(s) are actually installed and support arbitrary sizes.  If not, error out with instructions how to list available fonts on the device (if some font names are still not customizable through switches, also need to document where to change them in the script, e.g. if someone has heavily customized their Linux system area for accessibility)
 
 Don't freeze if a path is entered before "A" (or indeed if there are no dots at all, because you added them in a previous session)
 
@@ -77,7 +80,7 @@ Fix intermittent bug where dash snippets seemingly appear next to unrelated dots
 Fix intermittent bug where one end of a curve careens toward the corner of the image (seems to become more likely with length)
 
 For each path, save coordinate list temporarily to a file and pass filename to the final command, to avoid hitting OS limits on command line length
-	If there are a huge number of stickers, may need to generalize this to multiple passes, saving lossless intermediate images between invocations
+	If there is a huge number of stickers, may need to generalize this to multiple passes, saving lossless intermediate images between invocations
 
 Preprocessing path coordinates so long paths don't overcorrect?  I was never totally confident in my GIMP steps either, these are grasping at straws for a bandaid fix:
 	Remove adjacent duplicates
@@ -128,6 +131,11 @@ Decide whether numpy is still needed, after parsing/storage of coordinates is co
 
 Key command to toggle all temporary markers (cf. my supposed "sensible default" of not showing them with -pane)
 
+Ideally one of the two panes would always be the "active" pane, indicated by dimming or a colored border or whatnot (like in a text editor app with a sidebar).  Then the same command could do multiple things without clashing, e.g. arrow keys do slow scrolling in image pane, but move around to edit text in the coordinate pane
+
+Save final image in a layered format as well as flattened (in case the user wants to edit later with a completely different app)
+	EDIT: per on-wiki thread this is in fact not silly because, combined with -pane, it allows doing multiple passes to use differently formatted stickers in a basic way (e.g. for CTF or just a really complex thing allotment), without degrading line clarity
+
 
 
 Miscellaneous changes (silly)
@@ -135,15 +143,13 @@ Miscellaneous changes (silly)
 
 Center labels with a weighted average, including saturation percentage of individual pixels, instead of simple geometric center
 
-Command line option to eschew rough markers and draw a cumulative final image to the screen immediately after each token.  Detect when this is potentially unbelievably slow/resource intensive with the current image dimensions and device (per sources in credits.txt) and ask for confirmation the first time.  Investigate use of multithreading to speed it up?
+Command line option to eschew rough markers and draw a cumulative final image to the screen immediately after each token.  Detect when this is potentially unbelievably slow/resource intensive with the current image dimensions and device (per sources in credits.txt) and ask for confirmation the first time.  Would multithreading (buzzword alert) speed it up?
 
 Command line options to allow dots, lines, paths, and rough markers to all be different colors
 
 Use advanced image processing to infer a nominal dot size from the density of lines in the base image
 
 Wrap extremely long labels within the dot, so adjusted font size doesn't need to be as tiny
-
-Save final image in a layered format as well as flattened (in case the user wants to edit later with a completely different app)
 
 If -pane is used, use advanced image processing to automatically scale/crop/pad the pane image to match the input image
 
@@ -157,6 +163,8 @@ Support multiple dot colors for sectioning/categorization of route elements (sho
 
 Make everything usable on touch screens (axiomatic in 2026, obviously, but MediaWiki will never fully support touch screens, so I would rather not troll users by allowing them to create images when they probably can't contribute prose to match)
 
+Adjust locations by dragging in image pane (intuitive, yes, but the temp marker positions aren't exact anyway, and previewing the bezier like in GIMP may be overkill vs another approach to keeping curves in check.  Also per sources in credits.txt there could be device performance issues with making each bit of color as its own layer.  If the latter happens, just keeping the specks should be OK)
+
 
 
 Miscellaneous changes (very silly)
@@ -168,7 +176,7 @@ Use advanced image processing to detect whether a curve is hitting walls, warn a
 
 Retrieve input file through the wiki API
 
-Replace ImageMagick with PIL/Pillow (not a good idea IMO because it doesn't natively support bezier, so hand-crafted logic would have to be folded in and maintained forever with library updates.  That said, at least one example of such logic is explained thoroughly in the sources in credits.txt)
+Replace ImageMagick with PIL/Pillow (not a good idea at first blush because it doesn't natively support bezier, so hand-crafted logic would have to be folded in and maintained forever with library updates.  That said, at least one example of such logic is explained thoroughly in the sources in credits.txt, and moreover I say above that bezier is not the only way possibly to do the curves for all time.  On the other hand ImageMagick supposedly has a more stable maintainer team than Pillow, though I don't recollect where I heard that)
 
 Replace ImageMagick with "script-fu" in GIMP (not a good idea IMO because Scheme programming is much more obscure than Python, so all else equal your chance of finding maintainers drops sharply)
 
