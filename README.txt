@@ -14,4 +14,5 @@ v0.0.1 was released after testing with:
 	Python 3.14.0
 	numpy 2.3.3
 	Pillow 11.3.0
+	ImageMagick 7.1.2-3 Q16-HDRI x64
 
